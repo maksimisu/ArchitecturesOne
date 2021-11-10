@@ -8,6 +8,21 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ArchitecturesOne" />
+        android:theme="@style/Theme.ArchitecturesOne"
+        android:name=".data.core.CoreApplication">
+
+        <activity
+            android:name=".ui.screens.createnew.CreateNewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.screens.main.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 
 </manifest>
