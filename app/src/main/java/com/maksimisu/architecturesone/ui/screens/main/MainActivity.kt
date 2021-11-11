@@ -2,37 +2,33 @@ package com.maksimisu.architecturesone.ui.screens.main
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.maksimisu.architecturesone.data.core.CoreApplication
+import com.maksimisu.architecturesone.data.entities.Person
 import com.maksimisu.architecturesone.databinding.ActivityMainBinding
 import com.maksimisu.architecturesone.ui.screens.createnew.CreateNewActivity
+import org.koin.android.ext.android.get
 
-class MainActivity : AppCompatActivity() {
+class MainActivity<T : MainPresenter<V>, V : MainView> : AppCompatActivity(), MainView {
 
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var personsRVAdapter: PersonsRVAdapter
 
-    private val personViewModel: PersonViewModel by viewModels {
-        PersonViewModelFactory((application as CoreApplication).repository)
-    }
+    private lateinit var presenter: T
+    private fun providePresenter(): MainPresenter<V> = get()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         init()
 
-        personViewModel.persons.observe(this) { persons ->
-            persons.let { personsRVAdapter.persons = it }
-        }
-
+        presenter = providePresenter() as T
         binding.fabAdd.setOnClickListener {
             startActivity(Intent(this, CreateNewActivity::class.java))
         }
 
         binding.fabClear.setOnClickListener {
-            personViewModel.clear()
+            presenter.clear()
         }
     }
 
@@ -50,5 +46,9 @@ class MainActivity : AppCompatActivity() {
             override fun onClick(position: Int) {
             }
         })
+    }
+
+    override fun showPersons(persons: List<Person>) {
+        TODO("Not yet implemented")
     }
 }

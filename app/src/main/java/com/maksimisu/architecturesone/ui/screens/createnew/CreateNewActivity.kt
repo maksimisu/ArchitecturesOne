@@ -1,35 +1,30 @@
 package com.maksimisu.architecturesone.ui.screens.createnew
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.viewModels
-import com.maksimisu.architecturesone.data.core.CoreApplication
-import com.maksimisu.architecturesone.data.entities.Person
+import androidx.appcompat.app.AppCompatActivity
 import com.maksimisu.architecturesone.databinding.ActivityCreateNewBinding
-import com.maksimisu.architecturesone.ui.screens.main.PersonViewModel
-import com.maksimisu.architecturesone.ui.screens.main.PersonViewModelFactory
+import com.maksimisu.architecturesone.ui.screens.main.MainPresenter
+import com.maksimisu.architecturesone.ui.screens.main.MainView
+import org.koin.android.ext.android.get
 
 class CreateNewActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateNewBinding
 
-    private val personViewModel: PersonViewModel by viewModels {
-        PersonViewModelFactory((application as CoreApplication).repository)
-    }
+    private lateinit var presenter: MainPresenter<MainView>
+    private fun providePresenter(): MainPresenter<MainView> = get()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         init()
 
+        presenter = providePresenter()
+
         binding.btnAdd.setOnClickListener {
-            var id = 0
-            personViewModel.persons.observe(this) { persons ->
-                id = persons.size
-            }
+            val id = presenter.getData()[presenter.getData().size].id
             val firstname = binding.etFirstname.text.toString()
             val lastname = binding.etLastname.text.toString()
-            personViewModel.insert(Person(id, firstname, lastname))
-
+            presenter.addPerson(id, firstname, lastname)
             finish()
         }
 
